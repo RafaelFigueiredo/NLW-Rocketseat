@@ -2,7 +2,7 @@ import express from 'express'
 
 
 const app = express()
-
+app.use(express.json())
 
 const users = [
     'Rafael',
@@ -26,9 +26,14 @@ app.get('/users/:id', (request, response)=>{
     return response.json(user)
 })
 
-app.post('/user', (request, response)=>{
-    const {user} = request.body
-    users.push(user)
+app.post('/users', (request, response)=>{
+    const data = request.body
+    const user = {
+        name:   data.name,
+        email:  data.email,
+    }
+    
+    return response.json(user)
 })
 
 const PORT = process.env['PORT'] || 5252
