@@ -12,28 +12,10 @@ const users = [
     'Daniel',
 ]
 
-app.get('/users', (request, response)=>{
-    console.log('Listagem de usuários')
-    const search = String(request.query.search).toLowerCase()
-    const filteredUsers = search ? users.filter(user => user.toLowerCase().includes(search)) : users
-    return response.json(filteredUsers)
-})
-
-app.get('/users/:id', (request, response)=>{
-    console.log("Listagem de usuários único")
-    const id = Number(request.params.id)
-    const user = users[id]
-    return response.json(user)
-})
-
-app.post('/users', (request, response)=>{
-    const data = request.body
-    const user = {
-        name:   data.name,
-        email:  data.email,
-    }
-    
-    return response.json(user)
+app.get('/', (request, response)=>{
+    response.json({
+        status: 'running'
+    })
 })
 
 const PORT = process.env['PORT'] || 5252
