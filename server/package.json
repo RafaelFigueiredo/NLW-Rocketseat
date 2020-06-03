@@ -15,7 +15,7 @@
     "typescript": "^3.9.3"
   },
   "scripts": {
-    "dev": "ts-node-dev src/server.ts",
+    "dev": "ts-node-dev src/server.ts --ignore-watch node_modules --transpileOnly",
     "knex:migrate": "knex migrate:latest --knexfile knexfile.ts",
     "knex:seed": "knex seed:run --knexfile knexfile.ts"
   }
