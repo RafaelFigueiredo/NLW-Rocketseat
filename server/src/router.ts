@@ -1,40 +1,21 @@
 
 import express from 'express'
+import knex from './database/connection'
 
 
 const router = express.Router()
 
+router.get('/items', async (req, res)=>{
+    const items = await knex('items').select('*');
 
-
-const users = [
-    'Rafael',
-    'Diego',
-    'Cleiton',
-    'Robson',
-    'Daniel',
-]
-
-
-router.get('/users', (request, response)=>{
-    console.log('Listagem de usuários')
-    const search = String(request.query.search).toLowerCase()
-    const filteredUsers = search ? users.filter(user => user.toLowerCase().includes(search)) : users
-    return response.json(filteredUsers)
-})
-
-router.post('/users', (request, response)=>{
-    const data = request.body
-    const user = {
-        name:   data.name,
-        email:  data.email,
-    }
-    
-    return response.json(user)
-})
-
-router.get('/', (request, response)=>{
-    response.json({
-        status: 'running'
+    const serializedItems = items.map(item=>{
+        return {
+            title: item.title,
+            image_url: `http://localhost:5252/uploads/${item.image}`
+        }
+    })
+    return res.json({
+        serializedItems
     })
 })
 
