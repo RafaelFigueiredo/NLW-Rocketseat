@@ -1,9 +1,47 @@
 import React from 'react'
-import {View, StyleSheet} from 'react-native'
+import Constants from 'expo-constants'
+import {useNavigation} from '@react-navigation/native'
+import {Feather as Icon, FontAwesome} from '@expo/vector-icons'
+import {Text, Image,  View, StyleSheet, TouchableOpacity, SafeAreaView} from 'react-native'
+import { RectButton } from 'react-native-gesture-handler'
 
 
 const Detail = () =>{
-  return <View/>
+  const navigation = useNavigation()
+  function handleNavigateBack(){
+    navigation.goBack()
+  }
+
+  return(
+    <SafeAreaView style={{flex:1}}>
+    <View style={styles.container}>
+      <TouchableOpacity onPress={handleNavigateBack}>
+        <Icon name="arrow-left" size={20} color="#34cb79"/>
+      </TouchableOpacity>
+
+      <Image style={styles.pointImage} source={{uri:"https://images.unsplash.com/photo-1501523460185-2aa5d2a0f981?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=80"}} />
+      <Text style={styles.pointName}>Mercado da Vila</Text>
+      <Text style={styles.pointItems}>Lâmpadas, Óleo de Cozinha</Text>
+
+      <View style={styles.address}>
+        <Text style={styles.addressTitle}>Endereço</Text>
+        <Text style={styles.addressContent}>Rio de Janeiro, RJ</Text>
+      </View>
+    </View>
+    <View style={styles.footer}>
+      <RectButton style={styles.button} onPress={()=>{}}>
+        <FontAwesome name="whatsapp" size={20} color="#fff"></FontAwesome>
+        <Text style={styles.buttonText}>whatsapp</Text>
+      </RectButton>
+      <RectButton style={styles.button} onPress={()=>{}}>
+        <Icon name="mail" size={20} color="#fff"></Icon>
+        <Text style={styles.buttonText}>E-mail</Text>
+      </RectButton>
+
+    </View>
+    </SafeAreaView>
+
+  )
 }
 
 
@@ -12,7 +50,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 32,
-    paddingTop: 20,
+    paddingTop: 20 + Constants.statusBarHeight,
   },
 
   pointImage: {
@@ -59,6 +97,7 @@ const styles = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
     borderColor: '#999',
     paddingVertical: 20,
+    paddingBottom:10,
     paddingHorizontal: 32,
     flexDirection: 'row',
     justifyContent: 'space-between'
