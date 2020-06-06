@@ -1,6 +1,8 @@
 import {Request, Response} from 'express'
 import knex from '../database/connection';
 
+const BASE_URL = process.env['BASE_URL']
+
 class ItemsController{
     async index(request: Request, response: Response){
         const items = await knex('items').select('*');
@@ -9,7 +11,7 @@ class ItemsController{
             return {
                 id: item.id,
                 title: item.title,
-                image_url: `http://localhost:5252/uploads/${item.image}`
+                image_url: `${BASE_URL}/uploads/${item.image}`
             }
         })
         return response.json(serializedItems)

@@ -1,3 +1,4 @@
+require('dotenv').config()
 import express from 'express'
 import routers from './router'
 import path from 'path'
