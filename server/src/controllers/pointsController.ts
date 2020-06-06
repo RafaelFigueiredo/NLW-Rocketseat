@@ -17,7 +17,12 @@ class PointsController{
             .distinct()
             .select('points.*')
 
-        return response.json(points)
+        const serializedPoints = points.map(point => ({
+                ...points,
+                image: `http://192.168.99.1:5252/uploads/${point.image}`
+            }));
+
+        return response.json(serializedPoints)
 
     }
 
@@ -33,8 +38,13 @@ class PointsController{
             .join('point-items', 'items.id', '=','point-items.item_id')
             .where('point-items.point_id', id)
             .select('items.title')
-        
-        return response.json({ point, items})
+         
+        const serializedPoint = {
+            ...point,
+            image: `http://192.168.99.1:5252/uploads/${point.image}`
+            }
+
+        return response.json({ serializedPoint , items})
     }
 
     async create(request: Request, response: Response){
@@ -55,7 +65,7 @@ class PointsController{
     
         const point = {
             name,
-            image: 'https://images.unsplash.com/photo-1475275083424-b4ff81625b60?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=480q=60',
+            image: request.file.filename,
             email,
             whatsapp,
             latitude,
@@ -66,12 +76,16 @@ class PointsController{
         const insertedIds = await trx('points').insert(point)
     
         const point_id = insertedIds[0]
-        const pointItems = items.map((item_id: number)=>{
-            return{
-                item_id,
-                point_id
-            }
-        })
+        const pointItems = items
+            .split(',')
+            .map((item: string) => Number(item.trim()))
+            .map((item_id: number)=>{
+                    return{
+                        item_id,
+                        point_id
+                    }
+                });
+
         await trx('point-items').insert(pointItems)
 
         trx.commit()
