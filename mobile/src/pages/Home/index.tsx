@@ -1,17 +1,25 @@
-import React from 'react'
-import {Feather as Icon} from '@expo/vector-icons'
-import {View, ImageBackground, Image, StyleSheet, Text} from 'react-native'
-import {RectButton} from 'react-native-gesture-handler'
+import React, {useState} from 'react'
+import {Alert, View, ImageBackground, Image, StyleSheet, Text, KeyboardAvoidingView, Platform} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
-
+import {Feather as Icon} from '@expo/vector-icons'
+import {RectButton} from 'react-native-gesture-handler'
+import RNPickerSelect from 'react-native-picker-select';
 
 const Home = () => {
   const navigation = useNavigation();
 
+  const [uf, setUf] = useState('')
+  const [city, setCity] = useState('')
+
   function handleNavigationToPoints(){
-    navigation.navigate('Points')
+    console.log(`navigating to points >> ${city}-${uf}`)
+    navigation.navigate('Points',{
+      uf,
+      city
+    })
   }
   return(
+    <KeyboardAvoidingView style={{flex:1}} behavior={Platform.OS ==='ios'? 'padding': undefined}>
     <ImageBackground 
       style={styles.container}
       source={require('../../assets/home-background.png')}
@@ -19,10 +27,39 @@ const Home = () => {
     >
       <View style={styles.main}>
         <Image source={require('../../assets/logo.png')} />
+        <View>
         <Text style={styles.title}>Seu marketplace de coleta de resíduos</Text>
         <Text style={styles.description}>Ajudamos pessoas a encontrarem pontos de coleta de forma eficiente.</Text>
+        </View>
       </View>
       <View style={styles.footer}>
+        <>
+        <View style={styles.input}>
+        <RNPickerSelect
+            placeholder={{label:"Selecione a UF", value:''}}
+            onValueChange={(uf) => {setUf(uf)}}
+            value={uf}
+            items={[
+                { label: 'RJ', value: 'RJ' },
+                { label: 'SP', value: 'SP' },
+                { label: 'SC', value: 'SC' },
+            ]}
+        />
+        </View>
+        <View style={styles.input}>
+        <RNPickerSelect
+            placeholder={{label:"Selecione a Cidade", value:''}}
+            onValueChange={(city) => {setCity(city)}}
+            value={city}
+            items={[
+                { label: 'Rio de Janeiro', value: 'Rio de Janeiro' },
+                { label: 'Niterói', value: 'Niteroó' },
+                { label: 'Caxias', value: 'Caxias' },
+            ]}
+        />
+        </View>
+        </>
+
         <RectButton style={styles.button} onPress={handleNavigationToPoints}>
           <View style={styles.buttonIcon}>
             <Icon name="arrow-right" color="#fff" size={24}/>
@@ -34,6 +71,7 @@ const Home = () => {
       </View>
 
     </ImageBackground>
+    </KeyboardAvoidingView>
   )
 }
 
