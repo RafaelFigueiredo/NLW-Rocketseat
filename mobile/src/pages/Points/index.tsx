@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {Text, Image,  View, StyleSheet, TouchableOpacity, ScrollView, Alert} from 'react-native'
-import {useNavigation} from '@react-navigation/native'
+import {useNavigation, useRoute} from '@react-navigation/native'
 
 import Constants from 'expo-constants'
 import {Feather as Icon} from '@expo/vector-icons'
@@ -19,9 +19,17 @@ interface Item{
   image_url: string
 }
 
+interface Params{
+  uf: string
+  city: string
+}
+
 const Points = () =>{
   const navigation = useNavigation()
-
+  
+  const route = useRoute()
+  const routeParams = route.params as Params
+  
   const [items, setItems] = useState<Item[]>([])
   const [selectedItems, setSelectedItems] = useState<number[]>([])
   const [initialPoition, setInitialPosition] = useState<[number,number]>([0,0])
@@ -46,6 +54,7 @@ const Points = () =>{
       setItems(response.data)
     })
   }, [])
+  
   function handleNavigateBack(){
     navigation.goBack()
   }

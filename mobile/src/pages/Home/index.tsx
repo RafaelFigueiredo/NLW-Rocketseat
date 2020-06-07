@@ -1,15 +1,47 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Alert, View, ImageBackground, Image, StyleSheet, Text, KeyboardAvoidingView, Platform} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
 import {Feather as Icon} from '@expo/vector-icons'
 import {RectButton} from 'react-native-gesture-handler'
 import RNPickerSelect from 'react-native-picker-select';
+import axios from 'axios'
+
+interface IBGEUFResponse{
+  sigla: string
+}
+interface IBGECityResponse{
+  nome: string
+}
+
+
 
 const Home = () => {
   const navigation = useNavigation();
 
   const [uf, setUf] = useState('')
   const [city, setCity] = useState('')
+
+  const [ufs, setUfs] = useState<string[]>([])
+  const [cities, setCities] = useState<string[]>([])
+
+
+  useEffect(()=>{
+    axios.get<IBGEUFResponse[]>('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
+        .then(response =>{
+            const ufInitials = response.data.map(uf=>uf.sigla).sort()
+            setUfs(ufInitials)
+        })
+  }, [])
+
+  useEffect(()=>{
+      if(uf ==='') return
+      axios.get<IBGECityResponse[]>(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`)
+          .then(response =>{
+              const citieNames = response.data.map(city=>city.nome).sort()
+              setCities(citieNames)
+          })
+
+  }, [uf])
 
   function handleNavigationToPoints(){
     console.log(`navigating to points >> ${city}-${uf}`)
@@ -18,6 +50,9 @@ const Home = () => {
       city
     })
   }
+
+
+
   return(
     <KeyboardAvoidingView style={{flex:1}} behavior={Platform.OS ==='ios'? 'padding': undefined}>
     <ImageBackground 
@@ -39,11 +74,7 @@ const Home = () => {
             placeholder={{label:"Selecione a UF", value:''}}
             onValueChange={(uf) => {setUf(uf)}}
             value={uf}
-            items={[
-                { label: 'RJ', value: 'RJ' },
-                { label: 'SP', value: 'SP' },
-                { label: 'SC', value: 'SC' },
-            ]}
+            items={ ufs.map(uf=>({ label: uf, value: uf })) }
         />
         </View>
         <View style={styles.input}>
@@ -51,11 +82,7 @@ const Home = () => {
             placeholder={{label:"Selecione a Cidade", value:''}}
             onValueChange={(city) => {setCity(city)}}
             value={city}
-            items={[
-                { label: 'Rio de Janeiro', value: 'Rio de Janeiro' },
-                { label: 'Niterói', value: 'Niteroó' },
-                { label: 'Caxias', value: 'Caxias' },
-            ]}
+            items={ cities.map(city=>({ label: city, value: city })) }
         />
         </View>
         </>
