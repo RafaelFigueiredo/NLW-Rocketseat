@@ -6,7 +6,7 @@ This repository holds code developed during the NLW#1(Next Level Week ) organize
 
 The challenge was to develop in only one week a application with back-end, front-end and mobile app.
 
-[TOC]
+
 
 ## **Technologies**
 
