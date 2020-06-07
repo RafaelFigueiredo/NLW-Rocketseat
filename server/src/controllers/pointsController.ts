@@ -22,7 +22,7 @@ class PointsController{
             .select('points.*')
 
         const serializedPoints = points.map(point => ({
-                ...points,
+                ...point,
                 image: `${BASE_URL}/uploads/${point.image}`
             }));
 
@@ -48,7 +48,7 @@ class PointsController{
             image: `${BASE_URL}/uploads/${point.image}`
             }
 
-        return response.json({ serializedPoint , items})
+        return response.json({ point: serializedPoint , items})
     }
 
     async create(request: Request, response: Response){
